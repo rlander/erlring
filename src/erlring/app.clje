@@ -1,0 +1,18 @@
+(ns erlring.app
+  (:require [erlring.sup        :as sup]
+            [erlring.http       :as http]))
+
+(def handlers (atom {}))
+
+(defn start [handler]
+  (simple_bridge/start :cowboy :erlring.app)
+  (swap! handlers assoc :main handler)
+  (sup/start-link)
+  #erl[:ok (erlang/self)])
+
+(defn run [bridge]
+  (let [handler (:main @handlers)]
+    ((http/response bridge) (handler (http/bridge->map bridge)))))
+
+(defn stop [_state]
+  :ok)

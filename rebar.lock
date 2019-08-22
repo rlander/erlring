@@ -1,0 +1,20 @@
+{"1.1.0",
+[{<<"clojerl">>,{pkg,<<"clojerl">>,<<"0.5.1">>},0},
+ {<<"cowboy">>,{pkg,<<"cowboy">>,<<"2.6.3">>},0},
+ {<<"cowlib">>,{pkg,<<"cowlib">>,<<"2.7.3">>},1},
+ {<<"ranch">>,{pkg,<<"ranch">>,<<"1.7.1">>},1},
+ {<<"simple_bridge">>,
+  {git,"https://github.com/nitrogen/simple_bridge",
+       {ref,"f51222b739cb7650034a12d2be97711cf82c1d78"}},
+  0},
+ {<<"stacktrace_compat">>,
+  {git,"git://github.com/g-andrade/stacktrace_compat",
+       {ref,"fe6238499a216f6f94836be9ec0b3956ea5c6101"}},
+  1}]}.
+[
+{pkg_hash,[
+ {<<"clojerl">>, <<"DECC6E777D837FDD3792AADA3D0E40E55EF98126B995155295939CD4E539B445">>},
+ {<<"cowboy">>, <<"99AA50E94E685557CAD82E704457336A453D4ABCB77839AD22DBE71F311FCC06">>},
+ {<<"cowlib">>, <<"A7FFCD0917E6D50B4D5FB28E9E2085A0CEB3C97DEA310505F7460FF5ED764CE9">>},
+ {<<"ranch">>, <<"6B1FAB51B49196860B733A49C07604465A47BDB78AA10C1C16A3D199F7F8C881">>}]}
+].

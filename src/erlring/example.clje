@@ -1,0 +1,11 @@
+(ns erlring.example
+  (:require [erlring.app        :refer [start]]
+            [erlring.middleware :as mw]))
+
+(defn hello [req]
+  {:status 200
+   :body   "<h1>HELLO</h1>"})
+
+(defn start-server []
+  (let [app (mw/wrap-content-type hello "text/html")]
+    (start app)))

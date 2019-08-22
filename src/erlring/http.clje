@@ -1,0 +1,59 @@
+  (ns erlring.http
+    (:require [clojure.string :as str]))
+
+  (defn- params->query-string
+    [m]
+    (clojure.string/join "&" (for [[k v] m] (str (name k) "=" v))))
+
+  (defn- set-headers
+    [headers bridge]
+    (reduce #(%2 %) 
+            bridge 
+            (map 
+              (fn [[k v]] 
+                (partial sbw/set_header.3 k v)) 
+              headers)))
+
+  (defn- parse-ip
+    [ip-addr]
+    (->> ip-addr 
+         clj_rt/vector 
+         (str/join ".")))
+
+  (defn- parse-protocol
+    [protocol]
+    (str "HTTP/" (str/join "." protocol)))
+
+  (defn- proplist->map
+    [pl]
+    (into {} (clj_rt/vector pl)))
+
+  (defn bridge->map
+    [bridge]
+    (let [remote-addr               (parse-ip (sbw/peer_ip bridge))
+          query-string              (params->query-string (into {} (map #(clj_rt/vector %) (sbw/query_params bridge))))
+          headers                   (proplist->map (sbw/headers bridge))
+          [server-name server-port] (-> bridge 
+                                        sbw/headers
+                                        (get "host")
+                                        (str/split #":"))]
+
+      {:server-port    (read-string server-port)
+       :server-name    server-name
+       :remote-addr    remote-addr
+       :uri            (clj_rt/str (sbw/path bridge))
+       :query-string   query-string
+       :scheme         (sbw/protocol bridge)
+       :request-method (sbw/request_method bridge)
+       :protocol       (parse-protocol (sbw/protocol_version bridge))
+       :headers        headers
+       :body           (sbw/request_body bridge)}))
+
+  (defn response
+    [bridge]
+    (fn [{:keys [status headers body]}]
+      (->> bridge
+        (set-headers headers)
+        (sbw/set_status_code status)
+        (sbw/set_response_data body)
+        (sbw/build_response))))
